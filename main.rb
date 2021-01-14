@@ -1,9 +1,12 @@
 require 'active_record'
 require 'pp'
+# logger で sql をデバグ
 require 'logger'
 
+# logger の設定 + 標準出力(STDOUT)
 ActiveRecord::Base.logger = Logger.new(STDOUT)
 ActiveRecord::Base.default_timezone = :local
+
 
 ActiveRecord::Base.establish_connection(
   # sqlite -> pw 不要
@@ -19,18 +22,20 @@ class User < ActiveRecord::Base
 end
 
 # レコード挿入
-# user = User.new
-# user.name = "tanaka"
-# user.age = 23
-# user.save
+# User.create(name: "tanaka", age: 23)
+# User.create(name: "hoshi", age: 22)
 
-# ↑ の省略形
+# ブロックを使いレコード挿入
+user = User.new do |u|
+  u.name = "mochizuki"
+  u.age = 18
+end
 
-# user = User.new(name: "tanaka", age: 23)
-# user.save
+user.save
 
-# ↑ の更に省略形
-User.create(name: "tanaka", age: 23)
-User.create(name: "hoshi", age: 22)
+# logger out put
+# INSERT INTO "users" ("name", "age", "created_at", "updated_at") VALUES (?, ?, ?, ?)
+# [["name", "mochizuki"], ["age", 18], ["created_at", "2021-01-13 23:02:52.456842"], ["updated_at", "2021-01-13 23:02:52.456842"]]
 
-User.find_all
+# db1
+# 1|mochizuki|18|2021-01-13 23:02:52.456842|2021-01-13 23:02:52.456842
