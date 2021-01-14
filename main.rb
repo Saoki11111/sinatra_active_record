@@ -21,21 +21,39 @@ ActiveRecord::Base.establish_connection(
 class User < ActiveRecord::Base
 end
 
+# ファイル実行ごとにデータを消す
+User.delete_all
+
 # レコード挿入
-# User.create(name: "tanaka", age: 23)
-# User.create(name: "hoshi", age: 22)
+User.create(name: "tanaka", age: 19)
+User.create(name: "takahashi", age: 25)
+User.create(name: "hayashi", age: 31)
+User.create(name: "mizutani", age: 28)
+User.create(name: "otsuka", age: 35)
 
-# ブロックを使いレコード挿入
-user = User.new do |u|
-  u.name = "mochizuki"
-  u.age = 18
-end
+# 全件取得
+# pp User.all
 
-user.save
+# created_at, updated_at が不要 それ以外を抽出
+pp User.select("id, name, age").all
 
 # logger out put
-# INSERT INTO "users" ("name", "age", "created_at", "updated_at") VALUES (?, ?, ?, ?)
-# [["name", "mochizuki"], ["age", 18], ["created_at", "2021-01-13 23:02:52.456842"], ["updated_at", "2021-01-13 23:02:52.456842"]]
+# User Create (3.9ms)  INSERT INTO "users" ("name", "age", "created_at", "updated_at") VALUES (?, ?, ?, ?)  [["name", "tanaka"], ["age", 19], ["created_at", "2021-01-14 09:18:51.286930"], ["updated_at", "2021-01-14 09:18:51.286930"]]
 
 # db1
-# 1|mochizuki|18|2021-01-13 23:02:52.456842|2021-01-13 23:02:52.456842
+# [#<User:0x007f896d1326c8
+#   id: 1,
+#   name: "tanaka",
+#   age: 19,
+#   created_at: "2021-01-14 09:18:51.286930",
+#   updated_at: "2021-01-14 09:18:51.286930">,
+
+# logger select 時
+# User Create (1.8ms)  INSERT INTO "users" ("name", "age", "created_at", "updated_at") VALUES (?, ?, ?, ?)  [["name", "tanaka"], ["age", 19], ["created_at", "2021-01-14 09:28:35.295140"], ["updated_at", "2021-01-14 09:28:35.295140"]]
+
+# db1 select 時
+# [#<User:0x007fd78d210720 id: 1, name: "tanaka", age: 19>,
+#  #<User:0x007fd78d203d68 id: 2, name: "takahashi", age: 25>,
+#  #<User:0x007fd78d203c28 id: 3, name: "hayashi", age: 31>,
+#  #<User:0x007fd78d203ac0 id: 4, name: "mizutani", age: 28>,
+#  #<User:0x007fd78d203980 id: 5, name: "otsuka", age: 35>]
