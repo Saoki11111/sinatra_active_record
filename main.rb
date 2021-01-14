@@ -31,29 +31,23 @@ User.create(name: "hayashi", age: 31)
 User.create(name: "mizutani", age: 28)
 User.create(name: "otsuka", age: 35)
 
-# 全件取得
-# pp User.all
+# フィールド指定 id の 3 を抽出
+# pp User.select("id, name, age").find(3)
 
-# created_at, updated_at が不要 それ以外を抽出
-pp User.select("id, name, age").all
+# 名前で探す
+# pp User.select("id, name, age").find_by(name: "tanaka")
+# ↑ () を 省略可能
+# pp User.select("id, name, age").find_by name: "tanaka"
+# ↑ .find_by のあとにフィールド名をつなげて省略
+# pp User.select("id, name, age").find_by_name "tanaka"
+# ↑ () を追加しても書ける
+# pp User.select("id, name, age").find_by_name("kiriya")
+# > nil
+# ! がついていた場合、 存在しないレコードではエラーにする処理(通常 nil が返る)
+# pp User.select("id, name, age").find_by_name!("kiriya")
+
 
 # logger out put
-# User Create (3.9ms)  INSERT INTO "users" ("name", "age", "created_at", "updated_at") VALUES (?, ?, ?, ?)  [["name", "tanaka"], ["age", 19], ["created_at", "2021-01-14 09:18:51.286930"], ["updated_at", "2021-01-14 09:18:51.286930"]]
+# User Load (0.3ms)  SELECT  id, name, age FROM "users" WHERE "users"."name" = ? LIMIT ?  [["name", "tanaka"], ["LIMIT", 1]]
 
-# db1
-# [#<User:0x007f896d1326c8
-#   id: 1,
-#   name: "tanaka",
-#   age: 19,
-#   created_at: "2021-01-14 09:18:51.286930",
-#   updated_at: "2021-01-14 09:18:51.286930">,
-
-# logger select 時
-# User Create (1.8ms)  INSERT INTO "users" ("name", "age", "created_at", "updated_at") VALUES (?, ?, ?, ?)  [["name", "tanaka"], ["age", 19], ["created_at", "2021-01-14 09:28:35.295140"], ["updated_at", "2021-01-14 09:28:35.295140"]]
-
-# db1 select 時
-# [#<User:0x007fd78d210720 id: 1, name: "tanaka", age: 19>,
-#  #<User:0x007fd78d203d68 id: 2, name: "takahashi", age: 25>,
-#  #<User:0x007fd78d203c28 id: 3, name: "hayashi", age: 31>,
-#  #<User:0x007fd78d203ac0 id: 4, name: "mizutani", age: 28>,
-#  #<User:0x007fd78d203980 id: 5, name: "otsuka", age: 35>]
+#<User:0x007fc45dc41a70 id: 1, name: "tanaka", age: 19>
