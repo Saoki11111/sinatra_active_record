@@ -8,4 +8,11 @@ source 'https://rubygems.org'
 gem 'sinatra' 
 gem 'sinatra-contrib' 
 gem 'activerecord' 
-gem 'sqlite3'
+gem 'sqlite3', '~> 1.3.6'
+gem 'rake'
+gem "sinatra-activerecord"
+
+group :test do
+  gem 'rspec'
+  gem 'rack-test'
+end
