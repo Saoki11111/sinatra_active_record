@@ -31,23 +31,26 @@ User.create(name: "hayashi", age: 31)
 User.create(name: "mizutani", age: 28)
 User.create(name: "otsuka", age: 35)
 
-# フィールド指定 id の 3 を抽出
-# pp User.select("id, name, age").find(3)
+# where age が 20 の人 範囲で指定
+# pp User.select("id, name, age").where(age: 20..29)
 
-# 名前で探す
-# pp User.select("id, name, age").find_by(name: "tanaka")
-# ↑ () を 省略可能
-# pp User.select("id, name, age").find_by name: "tanaka"
-# ↑ .find_by のあとにフィールド名をつなげて省略
-# pp User.select("id, name, age").find_by_name "tanaka"
-# ↑ () を追加しても書ける
-# pp User.select("id, name, age").find_by_name("kiriya")
-# > nil
-# ! がついていた場合、 存在しないレコードではエラーにする処理(通常 nil が返る)
-# pp User.select("id, name, age").find_by_name!("kiriya")
+# 19歳と 31歳 のみ抽出
+# pp User.select("id, name, age").where(age: [19, 31])
 
+# where つなげて and 検索 age が 20 の人のみ
+# pp User.select("id, name, age").where("age >= 20").where("age < 30")
+# ↑ の where を省略
+# pp User.select("id, name, age").where("age >= 20 and age < 30")
+#
+# logger
+# [["age", 20], ["age", 29]]
+# [#<User:0x007f9eed3afe60 id: 2, name: "takahashi", age: 25>,
+# #<User:0x007f9eed3a75d0 id: 4, name: "mizutani", age: 28>]
 
-# logger out put
-# User Load (0.3ms)  SELECT  id, name, age FROM "users" WHERE "users"."name" = ? LIMIT ?  [["name", "tanaka"], ["LIMIT", 1]]
+# or and を or に
+pp User.select("id, name, age").where("age <= 20 or age >= 30")
 
-#<User:0x007fc45dc41a70 id: 1, name: "tanaka", age: 19>
+# logger
+# [#<User:0x007fc12c401510 id: 1, name: "tanaka", age: 19>,
+# #<User:0x007fc12bb2cb10 id: 3, name: "hayashi", age: 31>,
+# #<User:0x007fc12bb2c9d0 id: 5, name: "otsuka", age: 35>]
